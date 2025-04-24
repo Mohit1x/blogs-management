@@ -3,7 +3,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 
 
-const Login = ({ setLoggedIn }: { setLoggedIn: (state: boolean) => void }) => {
+const LoginComponent = ({ setLoggedIn }: { setLoggedIn: (state: boolean) => void }) => {
     const router = useRouter();
 
     const [formData, setFormData] = useState({
@@ -120,7 +120,7 @@ const Login = ({ setLoggedIn }: { setLoggedIn: (state: boolean) => void }) => {
                         Don't have an account? Register
                     </a>
                     <a onClick={()=>router.push('/reset-password')} className="mt-3 text-center hover:text-blue-500 transition-colors">
-                        Forgot password?
+                        Forgot password?    
                     </a>
                 </form>
             </div>
@@ -128,4 +128,4 @@ const Login = ({ setLoggedIn }: { setLoggedIn: (state: boolean) => void }) => {
     );
 };
 
-export default Login;
+export default LoginComponent;
