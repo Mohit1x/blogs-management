@@ -1,3 +1,5 @@
+"use client"
+
 import { useState, useEffect, useRef } from "react";
 
 import axios from "axios";
@@ -10,11 +12,13 @@ import { FaRegUser } from "react-icons/fa6";
 import { PiSignOut } from "react-icons/pi";
 import { Newspaper } from "lucide-react";
 import { useRouter } from "next/router";
+import { useAuth } from "../../context/authContext";
 
-const Navbar = ({ loggedIn, setLoggedIn }: { loggedIn: boolean, setLoggedIn: (state: boolean) => void }) => {
+const Navbar = () => {
 
     const router = useRouter();
     const {pathname} = router
+    const { isLoggedIn, setIsLoggedIn,setCurrentUserId ,userRole} = useAuth();
 
     // const [loggedIn, setLoggedIn] = useState<boolean>(false);
     const [profileImage, setProfileImage] = useState<string>('');
@@ -26,6 +30,7 @@ const Navbar = ({ loggedIn, setLoggedIn }: { loggedIn: boolean, setLoggedIn: (st
     const [results, setResults] = useState([]);
 
     const popOverRef = useRef<HTMLDivElement>(null);
+
 
 
     // Search Funcationality
@@ -123,36 +128,52 @@ const Navbar = ({ loggedIn, setLoggedIn }: { loggedIn: boolean, setLoggedIn: (st
         }
     }
 
-    // Check token and get user on load
+
+    const [token, setToken] = useState<string | null>(null);
+  
     useEffect(() => {
-        const token = localStorage.getItem('accessToken');
-
-        if (token) {
-            setLoggedIn(true);
-
-            try {
-                const decoded: any = jwtDecode(token);
-                // console.log("✅ Decoded Token: ", decoded);
-
-                if (decoded?.id || decoded?._id) {
-                    fetchLoggedInUser(decoded?.id || decoded?._id); // Pass directly
-                }
-                else {
-                    console.error("❌ No user ID found in token");
-                }
-            } catch (error) {
-                console.error("❌ Error decoding token:", error);
-                setLoggedIn(false); // Reset login state if token is invalid
-            }
-        } else {
-            setLoggedIn(false);
+      const storedToken = localStorage.getItem("accessToken");
+      if (storedToken) {
+        setToken(storedToken); 
+      }
+    }, []);
+  
+    useEffect(() => {
+        const token = localStorage.getItem("accessToken"); // fetch token fresh on every render
+    
+        if (!token) {
+          setIsLoggedIn(false);
+          setCurrentUserId(null);
+          return;
         }
-    }, [loggedIn]);
+    
+        setIsLoggedIn(true);
+    
+        try {
+          const decoded: any = jwtDecode(token);
+          const userId = decoded?.id || decoded?._id;
+    
+          if (userId) {
+            setCurrentUserId(userId);
+            // You can also call fetchLoggedInUser(userId); if needed
+            fetchLoggedInUser(userId)
+          } else {
+            console.error("❌ No user ID found in token");
+          }
+        } catch (error) {
+          console.error("❌ Error decoding token:", error);
+          setIsLoggedIn(false);
+          setCurrentUserId(null);
+        }
+      }, []); 
+    
 
 
-    // If the user is logged then only he can write blogs else it navigate to login
+
+
+
     const handleWrite = () => {
-        if (loggedIn) {
+        if (isLoggedIn) {
             router.push('/add-blog');
         } else {
             router.push('/login');
@@ -163,11 +184,13 @@ const Navbar = ({ loggedIn, setLoggedIn }: { loggedIn: boolean, setLoggedIn: (st
     const handleLogout = () => {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('userId')
-        setLoggedIn(false);
+        setIsLoggedIn(false);
+        setCurrentUserId(null);
         router.push('/login');
     };
 
     const handleProfileClick =(id:string)=>{
+        console.log(id,"profileId")
         router.push(`/profile/${id}`)
         setPopoverVisible(false)
     }
@@ -197,13 +220,13 @@ const Navbar = ({ loggedIn, setLoggedIn }: { loggedIn: boolean, setLoggedIn: (st
                             Blogs
                         </button>
 
-                        <button
+                       {userRole === "admin"? <button
                             onClick={handleWrite}
                             className={`${pathname === '/add-blog' ? 'flex items-center space-x-2 text-black' : 'flex items-center space-x-2 text-gray-500 hover:text-black'}`}
                         >
                             <FiEdit className="h-6 w-6" />
                             <span className="text-xl">Write</span>
-                        </button>
+                        </button>:null}
 
                         {/* Search Input */}
                         <div className={`${query ? 'border-2 border-black' : 'border-2 border-transparent'}   relative flex items-center bg-gray-100 pl-4 rounded-full`}>
@@ -253,7 +276,7 @@ const Navbar = ({ loggedIn, setLoggedIn }: { loggedIn: boolean, setLoggedIn: (st
                         </div>
 
 
-                        {loggedIn ? (
+                        {isLoggedIn ? (
                             <div ref={popOverRef} className="relative h-12 w-12 flex items-center justify-center">
                                 <button onClick={() => setPopoverVisible(!isPopoverVisible)}>
                                     <img

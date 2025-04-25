@@ -1,24 +1,22 @@
 import Navbar from "@/components/Navbar";
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
-import { useEffect, useState } from "react";
+import { AuthProvider } from "../../context/authContext";
+import Head from "next/head";
 
 export default function App({ Component, pageProps }: AppProps) {
-  const [loggedIn, setLoggedIn] = useState<boolean>(false);
- 
-   useEffect(() => {
-     const token = localStorage.getItem("accessToken");
-     if (token) {
-       setLoggedIn(true);
-     }
-   }, []);  
 
   return (
-    <div>
+    <>
+    
+    <AuthProvider>
+      <div>
      <div className="mb-20">
-     <Navbar loggedIn={loggedIn} setLoggedIn={setLoggedIn}  />
+     <Navbar   />
      </div>
      <Component {...pageProps} />
     </div>
+    </AuthProvider>
+    </>
   );
 }

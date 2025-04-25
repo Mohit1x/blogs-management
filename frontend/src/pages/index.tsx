@@ -9,6 +9,8 @@ import { FaArrowRightLong } from "react-icons/fa6";
 import Banner1 from '/banner-1.jpg'
 import Banner2 from '/banner-2.jpg'
 import ProjectsDoneSection from "@/components/ProjectsDoneSection";
+import Head from "next/head";
+import { HeadHelper } from "@/components/HeadHelper";
 
 const blogBanners = [
   { id: "0", authorName: 'Jhon Doe', createdAt: 'Feb 27, 2025', image: "/banner-1.jpg", heading: 'The MongoDB Mistake That’s Costing Your Startup Millions 🚀', smallDescription: 'Hey there, fellow developers! I’m Sachin, and today I want to share some of my favorite React component libraries that can make your development process smoother and more efficient. Whether you’re building dashboards,', },
@@ -22,6 +24,7 @@ const Home = () => {
 
   return (
     <>
+        <HeadHelper title="A9Blos - home" desc="home page of a9blogs"/>
       <div className="max-w-5xl mx-auto px-4">
 
         <div className="flex flex-col">

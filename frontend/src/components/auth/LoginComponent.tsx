@@ -1,10 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useAuth } from "../../../context/authContext";
 
 
-const LoginComponent = ({ setLoggedIn }: { setLoggedIn: (state: boolean) => void }) => {
+const LoginComponent = ( ) => {
     const router = useRouter();
+    const { isLoggedIn, setIsLoggedIn ,setUserRole} = useAuth();
+
+    useEffect(()=>{
+        if(isLoggedIn){
+            router.replace("/")
+        }
+    },[])
+
 
     const [formData, setFormData] = useState({
         email: '',
@@ -67,7 +76,8 @@ const LoginComponent = ({ setLoggedIn }: { setLoggedIn: (state: boolean) => void
             localStorage.setItem("userId", response.data.user._id)
             console.log("Login Successful");
             console.log("Access Token: ", response.data.user);
-            setLoggedIn(true);
+            setIsLoggedIn(true);
+            setUserRole(response.data?.user?.role)
 
             // Reset form & errors on success
             setFormData({ email: '', password: '' });
