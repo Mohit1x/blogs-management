@@ -74,10 +74,11 @@ const LoginComponent = ( ) => {
 
             localStorage.setItem("accessToken", response.data.user.token);
             localStorage.setItem("userId", response.data.user._id)
+            localStorage.setItem("userRole",response.data?.user?.role) 
+
             console.log("Login Successful");
             console.log("Access Token: ", response.data.user);
             setIsLoggedIn(true);
-            setUserRole(response.data?.user?.role)
 
             // Reset form & errors on success
             setFormData({ email: '', password: '' });

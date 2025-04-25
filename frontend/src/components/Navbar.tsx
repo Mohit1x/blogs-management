@@ -56,6 +56,8 @@ const Navbar = () => {
         return () => clearTimeout(delayDebounceFn);
     }, [query]);
 
+    console.log(userRole,"role")
+
 
     useEffect(() => {
         if (query.trim() !== "" && results.length !== 0) {
@@ -290,10 +292,10 @@ const Navbar = () => {
                                     <div className="absolute min-w-80 -left-64 top-14 bg-white shadow px-4">
                                         <a onClick={() => handleProfileClick(user?._id)} className="w-full flex items-center justify-start px-4 space-x-3 text-gray-500 hover:text-gray-900">
                                             <FaRegUser className="h-5 w-5" />
-                                            <span className="text-lg font-medium py-5">Profile</span>
+                                            <span className="text-lg font-medium py-5 cursor-pointer">Profile</span>
                                         </a>
                                         <hr className="border" />
-                                        <button onClick={() => { handleLogout(); setPopoverVisible(false) }} className="flex flex-col items-start py-4 px-4 group w-full">
+                                        <button onClick={() => { handleLogout(); setPopoverVisible(false) }} className="flex flex-col items-start py-4 px-4 group w-full cursor-pointer">
                                             <h1 className="flex items-center text-lg font-medium text-red-500 mb-1.5"><PiSignOut className="h-6 w-6 mr-2" /> Sign Out</h1>
                                             <p className=" text-gray-500 group-hover:text-gray-900">{user?.email}</p>
                                         </button>
@@ -303,7 +305,7 @@ const Navbar = () => {
                         )
                             : (
                                 <>
-                                    <button onClick={() => { router.push('/login') }} className="flex items-center space-x-2">
+                                    <button onClick={() => { router.push('/login') }} className="flex items-center space-x-2 cursor-pointer">
                                         <FaRegUser className="h-5 w-5" />
                                         <span className="text-gray-700">SignUp / SignIn</span>
                                     </button>
