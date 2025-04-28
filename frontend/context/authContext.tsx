@@ -27,7 +27,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const token = localStorage.getItem("accessToken");
     const userId = localStorage.getItem("userId");
     const userRole = localStorage.getItem("userRole")
-    console.log(userRole,"user role in context")
     if (token) {
       setIsLoggedIn(true);
     } else {

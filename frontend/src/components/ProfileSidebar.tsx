@@ -39,7 +39,6 @@ const Profile = ({ isFollowing, setIsFollowing }: ProfileProps ) => {
         try {
             const user = await axios.get(`http://localhost:5000/api/users/${id}`)
             if (user) {
-                //  console.log("Found User: ", user)
                 setAuthor(user.data);
                 setFollowingList(user.data.followings)
                 setFollowersCount(user.data.followers.length)
@@ -61,13 +60,11 @@ const Profile = ({ isFollowing, setIsFollowing }: ProfileProps ) => {
         try {
             const response = await axios.get(`http://localhost:5000/api/users/${currentUserId}`);
             if (response) {
-                //console.log("check following status response :", response.data);
                 const isCurrentlyFollowing = response.data.followings.some(
                     (user: any) => user._id === id
                 );
 
                 setIsFollowing(isCurrentlyFollowing);
-                console.log("isCurrentlyFollowing: ", isCurrentlyFollowing)
             }
 
         } catch (error) {
@@ -88,7 +85,6 @@ const Profile = ({ isFollowing, setIsFollowing }: ProfileProps ) => {
             const { data } = await axios.put(`http://localhost:5000/api/users/follow/${id}`, {
                 userId: currentUserId,
             });
-            console.log("followed: ", data);
 
             setIsFollowing(true);
             await checkFollowingStatus();

@@ -30,16 +30,13 @@ const AuthorBlogs = ({ loggedIn, setLoggedIn }: { loggedIn: boolean, setLoggedIn
         try {
             const response = await axios.get(`http://localhost:5000/api/blogs/${id}`)
             if (response.status === 200) {
-                console.log("Response data Blogs: ", response.data);
                 setAuthorBlogs(response.data)
                 setLoggedIn(true)
-                console.log("isLogged :", loggedIn)
             }
         } catch (error: any) {
             console.log("Error: ", error.message);
             setAuthorBlogs([])
             setLoggedIn(false)
-            console.log("changed", authorBlogs);
         }
     }
 
@@ -62,9 +59,24 @@ const AuthorBlogs = ({ loggedIn, setLoggedIn }: { loggedIn: boolean, setLoggedIn
             fetchUserBlogs();
         }
         const currentUser = localStorage.getItem("userId") || '';
-        console.log("Current LoggedIn User: ", currentUser);
         setUser(currentUser);
     }, [id])
+
+    const handleDeleteBlog=async(id:any,event:any)=>{
+        event.preventDefault()
+        
+            const confirmDelete = window.confirm("Are you sure you want to delete this blog ?");
+            if (!confirmDelete) return;
+    
+            try {
+                await axios.delete(`http://localhost:5000/api/blogs/blog/${id}`);
+                setAuthorBlogs((prevBlogs: any) => prevBlogs.filter((blog: any) => blog._id !== id));
+                alert("Blog deleted successfully!");
+            } catch (error) {
+                console.error("Error deleting blog:", error);
+            }
+        
+    }
 
 
     return (
@@ -105,7 +117,7 @@ const AuthorBlogs = ({ loggedIn, setLoggedIn }: { loggedIn: boolean, setLoggedIn
                                                         {loggedIn ? (
                                                             <div className="flex space-x-2">
                                                                 <Link href={`/edit-blog/${blog._id}`} className="bg-green-500/95 rounded-xs font-medium text-white px-4 py-1.5"><SquarePen /></Link>
-                                                                <button onClick={(e) => { e.preventDefault(); deleteBlog(blog._id); }}  className="flex bg-red-500/95 rounded-xs font-medium text-white px-4 py-1.5"> <Trash2 /></button>
+                                                                <button onClick={(e) => { handleDeleteBlog(blog._id,e) }}  className="flex bg-red-500/95 rounded-xs font-medium text-white px-4 py-1.5"> <Trash2 /></button>
                                                             </div>
                                                         ) : (
                                                             <div className="flex space-x-2">
